@@ -46,7 +46,7 @@ app.use(session({
     resave : false,
     saveUninitialized : true,
     // set this to true before deploy
-    cookie: { secure: false } 
+    cookie: { secure: true } 
 }))
 
 app.use(passport.initialize())
@@ -77,7 +77,7 @@ app.get("/success", (req, res) => {
 
     res.cookie('token', token, {
         httpOnly : true,
-        secure: false,
+        secure: true,
         maxAge : 24 * 60 * 60 * 1000,
         sameSite: 'Strict',
     })

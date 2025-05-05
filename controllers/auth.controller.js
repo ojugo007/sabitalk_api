@@ -31,7 +31,7 @@ const Signup = async(req, res) => {
     
     res.cookie('token', signupResponse.data.token,{ 
         httpOnly: true, 
-        secure: false, 
+        secure: true, 
         maxAge: 24 * 60 * 60 * 1000, 
         sameSite: 'Strict',
     })
@@ -50,7 +50,7 @@ const Login = async(req, res) =>{
 
     res.cookie('token', loginResponse.data.token, {
         httpOnly: true, 
-        secure: false, 
+        secure: true, 
         maxAge: 24 * 60 * 60 * 1000, 
         sameSite: 'Strict',
     })
