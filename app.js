@@ -46,7 +46,10 @@ app.use(session({
     resave : false,
     saveUninitialized : true,
     // set this to true before deploy
-    cookie: { secure: true } 
+    cookie: { 
+        secure: true,
+        sameSite : 'None'
+    } 
 }))
 
 app.use(passport.initialize())

@@ -33,7 +33,7 @@ const Signup = async(req, res) => {
         httpOnly: true, 
         secure: true, 
         maxAge: 24 * 60 * 60 * 1000, 
-        sameSite: 'Strict',
+        sameSite: 'None',
     })
 
     res.status(signupResponse.code).json(signupResponse)

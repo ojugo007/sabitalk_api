@@ -202,11 +202,7 @@ const VerifyOtp = async({otp, email}) =>{
             })
         }
 
-        console.log("does passed otp covert to number",Number(otp))
-        console.log( "does otp from redis covert to number", Number(oneTimePassword))
-        console.log( "does otp from redis typeof", typeof(oneTimePassword))
-        console.log( "does otp from redis typeof", typeof(otp))
-        console.log( Number(otp) !== Number(oneTimePassword))
+      
 
         if(Number(otp) !== Number(oneTimePassword)){
             return({
