@@ -28,10 +28,14 @@ var corsOption = {
     credentials: true 
 };
 
-app.set('trust proxy', true);
+// app.set('trust proxy', true);
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, 
 	limit: 10, 
+    validate: {
+		validationsConfig: false,
+		default: true,
+	},
 	standardHeaders: 'draft-8',
 	legacyHeaders: false, 
 	
