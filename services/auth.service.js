@@ -35,9 +35,9 @@ const Signup = async({email, password, termsAccepted, language}) =>{
         }
 
         const user = await UsersModel.create({email, password, termsAccepted, language })
-        
+        console.log(user)
         const token = generateToken(user.email)
-        
+        console.log(token)
         return({
             success: true,
             code : 201,

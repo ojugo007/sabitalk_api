@@ -6,30 +6,37 @@ const isProduction = process.env.NODE_ENV === "production"
 
 const Signup = async(req, res) => {
     const payload = req.body
-
+    console.log(payload)
     const language= req.session.language
-    
+    console.log(language)
     if(!language){
         res.status(400).json({
             message : "Language not selected",
         })
     }
     
-    if(!payload){
+    if(!payload || !payload.email || !payload.password || payload.termsAccepted === undefined){
         res.status(400).json({
             message : "all fields are required",
         })
     }
 
-    const newUser = new UsersModel({
+    const newUser = {
         email : payload.email,
         password : payload.password,
         termsAccepted : payload.termsAccepted,
         language 
-    })
+    }
+
+    console.log(newUser)
 
     const signupResponse = await authService.Signup(newUser)
-    
+
+    // if signup was unsuccessful
+    if (!signupResponse.success) {
+        return res.status(signupResponse.code).json(signupResponse);
+    }
+
     res.cookie('token', signupResponse.data.token,{ 
         httpOnly: true, 
         secure: isProduction, 
@@ -48,6 +55,11 @@ const Login = async(req, res) =>{
         email : payload.email,
         password : payload.password
     })
+
+        // if login was unsuccessful
+    if (!loginResponse.success) {
+        return res.status(loginResponse.code).json(loginResponse);
+    }
 
     res.cookie('token', loginResponse.data.token, {
         httpOnly: true, 
