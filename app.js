@@ -10,7 +10,8 @@ const { rateLimit } = require('express-rate-limit')
 const passport = require("passport")
 const jwt = require("jsonwebtoken")
 const cache = require("./redisClient")
-
+const MongoStore = require("connect-mongo")
+const mongoose = require("mongoose")
 
 const PORT = process.env.PORT || 8000
 
@@ -41,15 +42,23 @@ app.use(cors(corsOption))
 app.use(express.json())
 app.use(express.urlencoded({extended : true}))
 
+// dynamic setting secure to true or false
+const isProduction = process.env.NODE_ENV === 'production';
+
 app.use(session({
     secret : process.env.SESSION_SECRET,
     resave : false,
     saveUninitialized : true,
+    store : MongoStore.create({
+        // mongoUrl : process.env.MONGODB_CONNECTION_STRING,
+        // ttl : 14 * 24 * 60 * 60
+        client: mongoose.connection.getClient()
+    }),
     // set this to true before deploy
     cookie: { 
-        secure: true,
+        secure: isProduction,
         httpOnly : true,
-        sameSite : 'None'
+        sameSite : isProduction ? 'None' : 'Lax'
     } 
 }))
 
@@ -82,9 +91,9 @@ app.get("/success", (req, res) => {
 
     res.cookie('token', token, {
         httpOnly : true,
-        secure: true,
+        secure: isProduction,
         maxAge : 24 * 60 * 60 * 1000,
-        sameSite: 'Strict',
+        sameSite : isProduction ? 'None' : 'Lax'
     })
     res.status(201).json({
         success : true,

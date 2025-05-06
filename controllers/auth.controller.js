@@ -2,6 +2,7 @@
 const UsersModel = require("../models/users.model")
 const authService = require("../services/auth.service")
 
+const isProduction = process.env.NODE_ENV === "production"
 
 const Signup = async(req, res) => {
     const payload = req.body
@@ -31,11 +32,11 @@ const Signup = async(req, res) => {
     
     res.cookie('token', signupResponse.data.token,{ 
         httpOnly: true, 
-        secure: true, 
+        secure: isProduction, 
         maxAge: 24 * 60 * 60 * 1000, 
-        sameSite: 'None',
+        sameSite : isProduction ? 'None' : 'Lax',
     })
-    
+
     res.status(signupResponse.code).json(signupResponse)
     
 }
@@ -50,9 +51,9 @@ const Login = async(req, res) =>{
 
     res.cookie('token', loginResponse.data.token, {
         httpOnly: true, 
-        secure: true, 
+        secure: isProduction, 
         maxAge: 24 * 60 * 60 * 1000, 
-        sameSite: 'Strict',
+        sameSite : isProduction ? 'None' : 'Lax',
     })
 
     res.status(loginResponse.code).json(loginResponse)
