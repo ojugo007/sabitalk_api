@@ -12,7 +12,7 @@ const jwt = require("jsonwebtoken")
 const cache = require("./redisClient")
 
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 8000
 
 const app = express()
 
@@ -48,6 +48,7 @@ app.use(session({
     // set this to true before deploy
     cookie: { 
         secure: true,
+        httpOnly : true,
         sameSite : 'None'
     } 
 }))
