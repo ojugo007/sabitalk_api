@@ -35,7 +35,7 @@ const Signup = async(req, res) => {
         maxAge: 24 * 60 * 60 * 1000, 
         sameSite: 'None',
     })
-
+    
     res.status(signupResponse.code).json(signupResponse)
     
 }

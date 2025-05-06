@@ -68,6 +68,7 @@ app.post("/select-language", (req, res)=>{
     }
     req.session.language = language;
 
+    console.log(req.session)
     res.status(200).json({
         message : `successfully selected ${language}`
     })
