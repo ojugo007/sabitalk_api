@@ -133,7 +133,7 @@ const Reset = async({email})=>{
 
         const key = `otp:${userExist.email}`
 
-        await cache.redis.set(key, otp, { EX: 5 * 60 })
+        await cache.redis.set(key, otp, { EX: 10 * 60 })
 
         const CONFIG = {
             service: 'gmail',
