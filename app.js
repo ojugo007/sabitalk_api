@@ -92,6 +92,11 @@ app.post("/select-language", (req, res)=>{
 // OAuth signup and login
 app.get("/success", (req, res) => {
     const user = req.user
+    if (!user) {
+        return res.redirect('/failed');
+    }
+
+    console.log("from google oauth", user.email)
     const token = jwt.sign({email:user.email}, process.env.JWT_SECRET, {expiresIn : "1hr"})
 
     res.cookie('token', token, {
@@ -100,14 +105,8 @@ app.get("/success", (req, res) => {
         maxAge : 24 * 60 * 60 * 1000,
         sameSite : isProduction ? 'None' : 'Lax'
     })
-    res.status(201).json({
-        success : true,
-        data : {
-            user,
-            token
-        },
-        message : "login with google successfully"
-    })
+    const redirectUrl = `https://sabitalk.vercel.app/oauth-success?token=${token}`;
+    res.redirect(redirectUrl);
 })
 
 app.get("/failed", (req, res) => {
