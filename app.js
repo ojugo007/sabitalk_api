@@ -23,7 +23,7 @@ cache.connect();
 
 
 var corsOption = {
-    origin : ["http://localhost:5173/", "http://localhost:8000/"],
+    origin : ["http://localhost:5173/", "http://localhost:8000/", "https://sabitalk.vercel.app/"],
     optionsSuccessStatus: 200 ,
     credentials: true 
 };
