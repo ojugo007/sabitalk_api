@@ -31,11 +31,13 @@ passport.use(new GoogleStrategy({
         try{
             const userExist = await UsersModel.findOne({email: userData.email})
 
+            console.log({"user_exist_google" : userExist})
+
             if(!userExist){
                 const user = await UsersModel.create(userData)
+                console.log({"google_user" : user})
+                return done(null, user)
             }
-    
-            return done(null, user)
             
         }catch(err){
             return done(null, err)
