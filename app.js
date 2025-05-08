@@ -23,7 +23,7 @@ cache.connect();
 
 
 var corsOption = {
-    origin : ["http://localhost:5173/", "http://localhost:8000/", "https://sabitalk.vercel.app/"],
+    origin : ["http://localhost:5173/", "http://localhost:8000/", "https://sabitalk.vercel.app"],
     optionsSuccessStatus: 200 ,
     credentials: true 
 };
@@ -53,10 +53,8 @@ const isProduction = process.env.NODE_ENV === 'production';
 app.use(session({
     secret : process.env.SESSION_SECRET,
     resave : false,
-    saveUninitialized : true,
+    saveUninitialized : false,
     store : MongoStore.create({
-        // mongoUrl : process.env.MONGODB_CONNECTION_STRING,
-        // ttl : 14 * 24 * 60 * 60
         client: mongoose.connection.getClient()
     }),
     // set this to true before deploy
@@ -94,7 +92,7 @@ app.get("/success", (req, res) => {
     const user = req.user
     console.log("from google oauth is email caught", user.email)
     console.log("from google oauth is user in session", user)
-    console.log("from google oauth is user in session", req.session)
+    console.log("session at success", req.session)
     if (!user) {
         return res.redirect('/failed');
     }
@@ -112,6 +110,7 @@ app.get("/success", (req, res) => {
 })
 
 app.get("/failed", (req, res) => {
+    console.log("session at failure: ", req.session)
     res.status(400).json({
         success : false,
         data :null,
