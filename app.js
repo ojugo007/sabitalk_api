@@ -92,11 +92,13 @@ app.post("/select-language", (req, res)=>{
 // OAuth signup and login
 app.get("/success", (req, res) => {
     const user = req.user
+    console.log("from google oauth is email caught", user.email)
+    console.log("from google oauth is user in session", user)
+    console.log("from google oauth is user in session", req.session)
     if (!user) {
         return res.redirect('/failed');
     }
 
-    console.log("from google oauth", user.email)
     const token = jwt.sign({email:user.email}, process.env.JWT_SECRET, {expiresIn : "1hr"})
 
     res.cookie('token', token, {
