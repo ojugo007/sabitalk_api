@@ -10,7 +10,6 @@ passport.serializeUser((user, done)=> {
 passport.deserializeUser( async(id, done) =>{
     try {
         const user = await UsersModel.findById(id);
-        console.log("deserialized user: ", user)
         done(null, user);
     } catch (err) {
         done(err, null);
@@ -26,13 +25,13 @@ passport.use(new GoogleStrategy({
   },
 
     async function(request, accessToken, refreshToken, profile, done) {
-        console.log(request.session.language)
+        console.log("its language undefined ",request.session.language)
         const userData = {
             googleId : profile.id,
             username : profile.displayName,
             email : profile.emails[0].value,
             avatar : profile.photos[0].value,
-            language : request.session.language || null,
+            language : request.session.language || "yoruba",
             termsAccepted : true
         }
         try{
