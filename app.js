@@ -131,18 +131,26 @@ app.get("/failed", (req, res) => {
 //         }
 //     )
 // );
-passport.authenticate('google', (err, user, info) => {
-    if (err || !user) return res.redirect('/failed');
+app.get('/google-auth/callback', (req, res, next) => {
+    passport.authenticate('google', (err, user, info) => {
+        if (err || !user) {
+            return res.redirect('/failed');
+        }
 
-    req.logIn(user, function(err) {
-        if (err) return res.redirect('/failed');
-        
-        // Force session to save before redirect
-        req.session.save(() => {
-            res.redirect('/success');
+        // Manually establish login session
+        req.logIn(user, (err) => {
+            if (err) {
+                return res.redirect('/failed');
+            }
+
+            // Ensure session is saved before redirect
+            req.session.save(() => {
+                res.redirect('/success');
+            });
         });
-    });
-})(req, res, next);  
+    })(req, res, next); // <<< pass req/res/next here
+});
+
 // app.get( '/google-auth/callback',
 //     passport.authenticate( 'google', 
 //         {
