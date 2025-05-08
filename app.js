@@ -12,6 +12,7 @@ const jwt = require("jsonwebtoken")
 const cache = require("./redisClient")
 const MongoStore = require("connect-mongo")
 const mongoose = require("mongoose")
+const UsersModel = require("./models/users.model")
 
 const PORT = process.env.PORT || 8000
 
@@ -41,7 +42,7 @@ var corsOption = {
 app.use(cors(corsOption))
 
 
-require("./auth/google")
+const passportConfig = require("./auth/google")
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({extended : true}))
@@ -67,6 +68,7 @@ app.use(session({
 
 app.use(passport.initialize())
 app.use(passport.session())
+passportConfig(passport)
 
 // routes
 app.use("/auth", limiter, authRoute)
@@ -93,15 +95,17 @@ app.get("/check-session", (req, res) => {
 });
 
 // OAuth signup and login
-app.get("/success", (req, res) => {
+app.get("/success", async(req, res) => {
     console.log("req.session.passport:", req.session.passport);
     const user = req.user
-
-    if (!user) {
+    console.log(user)
+    if (!req.user) {
         return res.redirect('/failed');
     }
 
-    const token = jwt.sign({email:user.email}, process.env.JWT_SECRET, {expiresIn : "1hr"})
+    const newUser = await UsersModel.findOne({email : req.user.email })
+    console.log("old user", newUser)
+    const token = await jwt.sign({email:user.email}, process.env.JWT_SECRET, {expiresIn : "1hr"})
 
     res.cookie('token', token, {
         httpOnly : true,
@@ -130,7 +134,7 @@ app.get("/failed", (req, res) => {
 app.get('/google-auth/login',
     passport.authenticate('google', 
         { 
-            scope:[ 'email', 'profile' ] 
+            scope:[ 'profile', 'email' ],
         }
     )
 );
@@ -154,14 +158,10 @@ app.get('/google-auth/login',
 //     })(req, res, next); // <<< pass req/res/next here
 // });
 
-app.get( '/google-auth/callback',
-    passport.authenticate( 'google', 
-        {
-          successRedirect: '/success',
-          failureRedirect: '/failed'
-        }
-    )
-);
+app.get( '/google-auth/callback', passport.authenticate( 'google', {failureRedirect: '/failed'}), (req, res)=>{
+    res.redirect('/success');
+
+})
 
 
 app.get("/", (req,res)=>{
