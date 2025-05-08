@@ -4,7 +4,7 @@ const UsersModel = require('../models/users.model');
 require("dotenv").config()
 
 passport.serializeUser((user, done)=> {
-    console.log(user._id)
+    console.log("serialized user: ", user._id);
     done(null, user._id);
 });
 
