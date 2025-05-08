@@ -54,7 +54,8 @@ app.use(session({
     resave : false,
     saveUninitialized : false,
     store : MongoStore.create({
-        client: mongoose.connection.getClient()
+        client: mongoose.connection.getClient(),
+        ttl: 24 * 60 * 60
     }),
     // set this to true before deploy
     cookie: { 
@@ -92,7 +93,7 @@ app.get("/check-session", (req, res) => {
 // OAuth signup and login
 app.get("/success", (req, res) => {
     const sessionStore = mongoose.connection.db.collection('sessions')
-    conole.log("from success", sessionStore)
+    console.log("from success", sessionStore)
     console.log("req.session.passport:", req.session.passport);
     const user = req.user
     res.setHeader('Access-Control-Allow-Credentials', 'true')
