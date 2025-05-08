@@ -147,6 +147,8 @@ app.get("/", (req,res)=>{
 
 app.use((error, req, res, next)=>{
     console.log("path: ", req.path)
+    console.log("session: ", req.session)
+    console.log("user: ", req.user)
    
     const StatusCode = error.status || 500
     const message = error.message || "Internal server error"
