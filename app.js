@@ -21,35 +21,34 @@ const app = express()
 connect.connectDB()
 cache.connect();
 
-
-var corsOption = {
-    origin : ["http://localhost:5173/", "http://localhost:8000/", "https://sabitalk.vercel.app"],
-    optionsSuccessStatus: 200 ,
-    credentials: true 
-};
-
-// app.set('trust proxy', true);
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000, 
-	limit: 10, 
+    windowMs: 15 * 60 * 1000, 
+    limit: 10, 
     validate: {
-		validationsConfig: false,
-		default: true,
-	},
-	standardHeaders: 'draft-8',
-	legacyHeaders: false, 
-	
+        validationsConfig: false,
+        default: true,
+    },
+    standardHeaders: 'draft-8',
+    legacyHeaders: false, 
+    
 })
 
-require("./auth/google")
+var corsOption = {
+    origin : ["http://localhost:5173/", "http://localhost:8000/", "https://sabitalk-api.onrender.com/","https://sabitalk.vercel.app"],
+    credentials: true,
+    methods: ["GET", "POST"],
+};
 app.use(cors(corsOption))
+
+
+require("./auth/google")
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({extended : true}))
 
 // dynamic setting secure to true or false
 const isProduction = process.env.NODE_ENV === 'production';
 
-app.use(cookieParser())
 app.use(session({
     secret : process.env.SESSION_SECRET,
     resave : false,
@@ -85,12 +84,16 @@ app.post("/select-language", (req, res)=>{
         message : `successfully selected ${language}`
     })
 })
-
-
+// test if session is set correctly
+app.get("/check-session", (req, res) => {
+    console.log("Session data:", req.session);
+    res.json({ message: "Session data", session: req.session });
+});
 // OAuth signup and login
 app.get("/success", (req, res) => {
     console.log("req.session.passport:", req.session.passport);
     const user = req.user
+    res.setHeader('Access-Control-Allow-Credentials', 'true')
     // console.log("from google oauth is email caught", user.email)
     // console.log("from google oauth is user in session", user)
     // console.log("session at success", req.session)
