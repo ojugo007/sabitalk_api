@@ -90,12 +90,12 @@ app.post("/select-language", (req, res)=>{
 // OAuth signup and login
 app.get("/success", (req, res) => {
     const user = req.user
-    console.log("from google oauth is email caught", user.email)
-    console.log("from google oauth is user in session", user)
-    console.log("session at success", req.session)
-    if (!user) {
-        return res.redirect('/failed');
-    }
+    // console.log("from google oauth is email caught", user.email)
+    // console.log("from google oauth is user in session", user)
+    // console.log("session at success", req.session)
+    // if (!user) {
+    //     return res.redirect('/failed');
+    // }
 
     const token = jwt.sign({email:user.email}, process.env.JWT_SECRET, {expiresIn : "1hr"})
 
@@ -105,8 +105,13 @@ app.get("/success", (req, res) => {
         maxAge : 24 * 60 * 60 * 1000,
         sameSite : isProduction ? 'None' : 'Lax'
     })
-    const redirectUrl = `https://sabitalk.vercel.app/oauth-success?token=${token}`;
-    res.redirect(redirectUrl);
+    res.status(200).json({
+        success : true,
+        data :{ user, token},
+        message : "logged in successfully"
+    })
+    // const redirectUrl = `https://sabitalk.vercel.app/oauth-success?token=${token}`;
+    // res.redirect(redirectUrl);
 })
 
 app.get("/failed", (req, res) => {

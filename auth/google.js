@@ -25,7 +25,6 @@ passport.use(new GoogleStrategy({
   },
 
     async function(request, accessToken, refreshToken, profile, done) {
-        console.log("its language undefined ",request.session.language)
         const userData = {
             googleId : profile.id,
             username : profile.displayName,
