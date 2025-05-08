@@ -85,24 +85,21 @@ app.post("/select-language", (req, res)=>{
         message : `successfully selected ${language}`
     })
 })
+
 // test if session is set correctly
 app.get("/check-session", (req, res) => {
     console.log("Session data:", req.session);
     res.json({ message: "Session data", session: req.session });
 });
+
 // OAuth signup and login
 app.get("/success", (req, res) => {
-    const sessionStore = mongoose.connection.db.collection('sessions')
-    console.log("from success", sessionStore)
     console.log("req.session.passport:", req.session.passport);
     const user = req.user
-    res.setHeader('Access-Control-Allow-Credentials', 'true')
-    // console.log("from google oauth is email caught", user.email)
-    // console.log("from google oauth is user in session", user)
-    // console.log("session at success", req.session)
-    // if (!user) {
-    //     return res.redirect('/failed');
-    // }
+
+    if (!user) {
+        return res.redirect('/failed');
+    }
 
     const token = jwt.sign({email:user.email}, process.env.JWT_SECRET, {expiresIn : "1hr"})
 
@@ -123,13 +120,11 @@ app.get("/success", (req, res) => {
 
 app.get("/failed", (req, res) => {
     console.log("session at failure: ", req.session)
-    // res.status(400).json({
-    //     success : false,
-    //     data :null,
-    //     message : "failed to login"
-    // }).
-    const redirectUrl = `https://sabitalk.vercel.app/sign-up`;
-    res.redirect(redirectUrl);
+    res.status(400).json({
+        success : false,
+        data :null,
+        message : "failed to login"
+    })
 })
 
 app.get('/google-auth/login',
@@ -184,7 +179,8 @@ app.use((error, req, res, next)=>{
 
     res.status(StatusCode).json({
         success : false,
-        message 
+        message ,
+        error
     })
     next()
 })
