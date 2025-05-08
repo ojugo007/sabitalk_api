@@ -124,13 +124,13 @@ app.get("/failed", (req, res) => {
     })
 })
 
-// app.get('/google-auth/login',
-//     passport.authenticate('google', 
-//         { 
-//             scope:[ 'email', 'profile' ] 
-//         }
-//     )
-// );
+app.get('/google-auth/login',
+    passport.authenticate('google', 
+        { 
+            scope:[ 'email', 'profile' ] 
+        }
+    )
+);
 app.get('/google-auth/callback', (req, res, next) => {
     passport.authenticate('google', (err, user, info) => {
         if (err || !user) {
@@ -159,19 +159,19 @@ app.get('/google-auth/callback', (req, res, next) => {
 //         }
 //     )
 // );
-app.get('/google-auth/callback', (req, res, next) => {
-    passport.authenticate('google', (err, user, info) => {
-        if (err || !user) return res.redirect('/failed');
+// app.get('/google-auth/callback', (req, res, next) => {
+//     passport.authenticate('google', (err, user, info) => {
+//         if (err || !user) return res.redirect('/failed');
 
-        req.logIn(user, function(err) {
-            if (err) return res.redirect('/failed');
+//         req.logIn(user, function(err) {
+//             if (err) return res.redirect('/failed');
             
-            req.session.save(() => {
-                res.redirect('/success');
-            });
-        });
-    })(req, res, next);
-});
+//             req.session.save(() => {
+//                 res.redirect('/success');
+//             });
+//         });
+//     })(req, res, next);
+// });
 
 app.get("/", (req,res)=>{
     res.send("we are live")
