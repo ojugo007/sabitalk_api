@@ -91,6 +91,8 @@ app.get("/check-session", (req, res) => {
 });
 // OAuth signup and login
 app.get("/success", (req, res) => {
+    const sessionStore = mongoose.connection.db.collection('sessions')
+    conole.log("from success", sessionStore)
     console.log("req.session.passport:", req.session.passport);
     const user = req.user
     res.setHeader('Access-Control-Allow-Credentials', 'true')

@@ -41,7 +41,8 @@ passport.use(new GoogleStrategy({
             const userExist = await UsersModel.findOne({email: userData.email})
 
             console.log({"user_exist_google" : userExist})
-
+            const sessionStore = mongoose.connection.db.collection('sessions')
+            conole.log("from google.js", sessionStore)
             if(!userExist){
                 const user = await UsersModel.create(userData)
                 console.log({"google_user" : user})
