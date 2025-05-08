@@ -4,14 +4,18 @@ const UsersModel = require('../models/users.model');
 require("dotenv").config()
 
 passport.serializeUser((user, done)=> {
+    console.log(user._id)
     done(null, user._id);
 });
 
 passport.deserializeUser( async(id, done) =>{
+    console.log("Deserializing user with ID:", id);
     try {
         const user = await UsersModel.findById(id);
+        console.log("User found during deserialization:", user)
         done(null, user);
     } catch (err) {
+        console.error("Error during deserialization:", err); 
         done(err, null);
     }
 
