@@ -42,7 +42,6 @@ const limiter = rateLimit({
 })
 
 require("./auth/google")
-app.use(cookieParser())
 app.use(cors(corsOption))
 app.use(express.json())
 app.use(express.urlencoded({extended : true}))
@@ -50,6 +49,7 @@ app.use(express.urlencoded({extended : true}))
 // dynamic setting secure to true or false
 const isProduction = process.env.NODE_ENV === 'production';
 
+app.use(cookieParser())
 app.use(session({
     secret : process.env.SESSION_SECRET,
     resave : false,
@@ -117,11 +117,13 @@ app.get("/success", (req, res) => {
 
 app.get("/failed", (req, res) => {
     console.log("session at failure: ", req.session)
-    res.status(400).json({
-        success : false,
-        data :null,
-        message : "failed to login"
-    })
+    // res.status(400).json({
+    //     success : false,
+    //     data :null,
+    //     message : "failed to login"
+    // }).
+    const redirectUrl = `https://sabitalk.vercel.app/sign-up`;
+    res.redirect(redirectUrl);
 })
 
 app.get('/google-auth/login',
@@ -131,47 +133,35 @@ app.get('/google-auth/login',
         }
     )
 );
-app.get('/google-auth/callback', (req, res, next) => {
-    passport.authenticate('google', (err, user, info) => {
-        if (err || !user) {
-            return res.redirect('/failed');
-        }
-
-        // Manually establish login session
-        req.logIn(user, (err) => {
-            if (err) {
-                return res.redirect('/failed');
-            }
-
-            // Ensure session is saved before redirect
-            req.session.save(() => {
-                res.redirect('/success');
-            });
-        });
-    })(req, res, next); // <<< pass req/res/next here
-});
-
-// app.get( '/google-auth/callback',
-//     passport.authenticate( 'google', 
-//         {
-//           successRedirect: '/success',
-//           failureRedirect: '/failed'
-//         }
-//     )
-// );
 // app.get('/google-auth/callback', (req, res, next) => {
 //     passport.authenticate('google', (err, user, info) => {
-//         if (err || !user) return res.redirect('/failed');
+//         if (err || !user) {
+//             return res.redirect('/failed');
+//         }
 
-//         req.logIn(user, function(err) {
-//             if (err) return res.redirect('/failed');
-            
+//         // Manually establish login session
+//         req.logIn(user, (err) => {
+//             if (err) {
+//                 return res.redirect('/failed');
+//             }
+
+//             // Ensure session is saved before redirect
 //             req.session.save(() => {
 //                 res.redirect('/success');
 //             });
 //         });
-//     })(req, res, next);
+//     })(req, res, next); // <<< pass req/res/next here
 // });
+
+app.get( '/google-auth/callback',
+    passport.authenticate( 'google', 
+        {
+          successRedirect: '/success',
+          failureRedirect: '/failed'
+        }
+    )
+);
+
 
 app.get("/", (req,res)=>{
     res.send("we are live")
