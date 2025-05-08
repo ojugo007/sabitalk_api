@@ -35,6 +35,7 @@ passport.use(new GoogleStrategy({
 
             if(!userExist){
                 const user = await UsersModel.create(userData)
+                request.user = user
                 console.log({"google_user" : user})
                 return done(null, user)
             }
