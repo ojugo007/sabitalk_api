@@ -89,6 +89,7 @@ app.post("/select-language", (req, res)=>{
 
 // OAuth signup and login
 app.get("/success", (req, res) => {
+    console.log("req.session.passport:", req.session.passport);
     const user = req.user
     // console.log("from google oauth is email caught", user.email)
     // console.log("from google oauth is user in session", user)
