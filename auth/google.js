@@ -3,12 +3,19 @@ const passport = require("passport");
 const UsersModel = require('../models/users.model');
 require("dotenv").config()
 
-passport.serializeUser(function(user, done) {
-    done(null, user);
+passport.serializeUser((user, done)=> {
+    done(null, user._id);
 });
 
-passport.deserializeUser(function(user, done) {
+passport.deserializeUser(async(user, done) =>{
+    try {
+        const user = await UsersModel.findById(id);
+        console.log("deserialized user: ", user)
         done(null, user);
+    } catch (err) {
+        done(err, null);
+    }
+
 });
 
 passport.use(new GoogleStrategy({
