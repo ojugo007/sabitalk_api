@@ -5,19 +5,26 @@ require("dotenv").config()
 
 passport.serializeUser((user, done)=> 
     {
-    console.log("serialized user: ", user._id);
-    done(null, user._id);
+    console.log("serialized user: ", user.email);
+    done(null, user.email);
 });
 
-passport.deserializeUser( async function(id, done){
-    console.log("Deserializing user with ID:", id);
+passport.deserializeUser( async function(email, done){
+    console.log("Deserializing user with ID:", email);
     try {
-        const user = await UsersModel.findById(id);
+        const user = await UsersModel.findOne({email : email});
         console.log("User found during deserialization:", user)
-        done(null, user);
+
+        if (user) {
+            console.log("if is running", user);
+            return done(null, user);  
+        } else {
+            console.log("else is running");
+            return done(null, false);  
+        }  
     } catch (err) {
         console.error("Error during deserialization:", err); 
-        done(err, null);
+        done(err);
     }
 
 });
