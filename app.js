@@ -39,7 +39,8 @@ var corsOption = {
         "http://localhost:5173",
         "http://localhost:8000",
         "https://sabitalk-api.onrender.com",
-        "https://sabitalk.vercel.app"
+        "https://sabitalk.vercel.app",
+        "https://huge-moose-say.loca.lt"
     ],
     credentials: true,
     methods: ["GET", "POST"],
