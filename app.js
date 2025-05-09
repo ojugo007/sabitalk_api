@@ -22,6 +22,7 @@ const app = express()
 connect.connectDB()
 cache.connect();
 
+app.set('trust proxy', 1); 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, 
     limit: 10, 
@@ -73,6 +74,11 @@ passportConfig(passport)
 // routes
 app.use("/auth", limiter, authRoute)
 
+app.use((req, res, next) => {
+    console.log('SESSION:', req.session);
+    next();
+  });
+  
 app.post("/select-language", (req, res)=>{
     const {language} = req.body;
     if(!language){
