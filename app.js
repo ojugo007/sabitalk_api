@@ -35,7 +35,12 @@ const limiter = rateLimit({
 })
 
 var corsOption = {
-    origin : ["http://localhost:5173/", "http://localhost:8000/", "https://sabitalk-api.onrender.com/","https://sabitalk.vercel.app"],
+    origin : [
+        "http://localhost:5173",
+        "http://localhost:8000",
+        "https://sabitalk-api.onrender.com",
+        "https://sabitalk.vercel.app"
+    ],
     credentials: true,
     methods: ["GET", "POST"],
 };
