@@ -55,11 +55,16 @@ app.use(express.urlencoded({extended : true}))
 
 // dynamic setting secure to true or false
 const isProduction = process.env.NODE_ENV === 'production';
-
+console.log("isProduction : ", isProduction)
+console.log("isProduction type: ", typeof(isProduction))
 app.use(session({
     secret : process.env.SESSION_SECRET,
     resave : false,
     saveUninitialized : false,
+    store : MongoStore.create({
+        client: mongoose.connection.getClient(),
+        ttl: 2 * 60 * 60
+    }),
     cookie: { 
         secure: isProduction,
         httpOnly : true,
@@ -119,13 +124,13 @@ app.get("/success", async(req, res) => {
         maxAge : 24 * 60 * 60 * 1000,
         sameSite : isProduction ? 'None' : 'Lax'
     })
-    res.status(200).json({
-        success : true,
-        data :{ user, token},
-        message : "logged in successfully"
-    })
-    // const redirectUrl = `https://sabitalk.vercel.app/oauth-success?token=${token}`;
-    // res.redirect(redirectUrl);
+    // res.status(200).json({
+    //     success : true,
+    //     data :{ user, token},
+    //     message : "logged in successfully"
+    // })
+    const redirectUrl = `https://sabitalk.vercel.app/dashbord`;
+    res.redirect(redirectUrl);
 })
 
 app.get("/failed", (req, res) => {
