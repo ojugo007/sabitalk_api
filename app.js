@@ -39,9 +39,8 @@ var corsOption = {
     credentials: true,
     methods: ["GET", "POST"],
 };
+
 app.use(cors(corsOption))
-
-
 const passportConfig = require("./auth/google")
 app.use(cookieParser())
 app.use(express.json())
@@ -54,11 +53,6 @@ app.use(session({
     secret : process.env.SESSION_SECRET,
     resave : false,
     saveUninitialized : false,
-    store : MongoStore.create({
-        client: mongoose.connection.getClient(),
-        ttl: 24 * 60 * 60
-    }),
-    // set this to true before deploy
     cookie: { 
         secure: isProduction,
         httpOnly : true,

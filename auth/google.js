@@ -49,7 +49,7 @@ module.exports = function (passport) {
     });
 
     passport.deserializeUser(async (email, done) => {
-        console.log("Deserializing user with ID:", email);
+        console.log("Deserializing user with email:", email);
         try {
             const user = await UsersModel.findOne({ email: email });
             console.log("User found during deserialization:", user)
