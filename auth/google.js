@@ -44,25 +44,19 @@ module.exports = function (passport) {
     ));
 
     passport.serializeUser((user, done) => {
-        console.log("serialized user: ", user.email);
         done(null, user.email);
     });
 
     passport.deserializeUser(async (email, done) => {
-        console.log("Deserializing user with email:", email);
         try {
             const user = await UsersModel.findOne({ email: email });
-            console.log("User found during deserialization:", user)
 
             if (user) {
-                console.log("if is running", user);
                 return done(null, user);
             } else {
-                console.log("else is running");
                 return done(null, false);
             }
         } catch (err) {
-            console.error("Error during deserialization:", err);
             done(err);
         }
 

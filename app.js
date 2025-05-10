@@ -13,6 +13,7 @@ const cache = require("./redisClient")
 const MongoStore = require("connect-mongo")
 const mongoose = require("mongoose")
 const UsersModel = require("./models/users.model")
+const lessonsRoute = require("./routes/lessons.route")
 
 const PORT = process.env.PORT || 8000
 
@@ -55,8 +56,7 @@ app.use(express.urlencoded({extended : true}))
 
 // dynamic setting secure to true or false
 const isProduction = process.env.NODE_ENV === 'production';
-console.log("isProduction : ", isProduction)
-console.log("isProduction type: ", typeof(isProduction))
+
 app.use(session({
     secret : process.env.SESSION_SECRET,
     resave : false,
@@ -78,12 +78,8 @@ passportConfig(passport)
 
 // routes
 app.use("/auth", limiter, authRoute)
+app.use("/lessons", lessonsRoute)
 
-app.use((req, res, next) => {
-    console.log('SESSION:', req.session);
-    next();
-  });
-  
 app.post("/select-language", (req, res)=>{
     const {language} = req.body;
     if(!language){
@@ -99,11 +95,6 @@ app.post("/select-language", (req, res)=>{
     })
 })
 
-// test if session is set correctly
-app.get("/check-session", (req, res) => {
-    console.log("Session data:", req.session);
-    res.json({ message: "Session data", session: req.session });
-});
 
 // OAuth signup and login
 app.get("/success", async(req, res) => {
@@ -129,7 +120,7 @@ app.get("/success", async(req, res) => {
     //     data :{ user, token},
     //     message : "logged in successfully"
     // })
-    const redirectUrl = `https://sabitalk.vercel.app/dashbord`;
+    const redirectUrl = `https://sabitalk.vercel.app/dashboard`;
     res.redirect(redirectUrl);
 })
 
@@ -149,25 +140,7 @@ app.get('/google-auth/login',
         }
     )
 );
-// app.get('/google-auth/callback', (req, res, next) => {
-//     passport.authenticate('google', (err, user, info) => {
-//         if (err || !user) {
-//             return res.redirect('/failed');
-//         }
 
-//         // Manually establish login session
-//         req.logIn(user, (err) => {
-//             if (err) {
-//                 return res.redirect('/failed');
-//             }
-
-//             // Ensure session is saved before redirect
-//             req.session.save(() => {
-//                 res.redirect('/success');
-//             });
-//         });
-//     })(req, res, next); // <<< pass req/res/next here
-// });
 
 app.get( '/google-auth/callback', passport.authenticate( 'google', {failureRedirect: '/failed'}), (req, res)=>{
     res.redirect('/success');
