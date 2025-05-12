@@ -495,7 +495,7 @@ The JWT token must be sent via **cookies** (not the Authorization header).
 
 ----------
 
-### **2. POST /lessons**
+### **2. POST /lessons/add-lesson**
 
 #### **Description**
 
@@ -543,7 +543,7 @@ Add a new lesson or update an existing lesson. Only **admin** users can access t
 
 
 ```
-POST /lessons
+POST /lessons/add-lesson
 Content-Type: application/json
 Cookie: token=<your-jwt-token>
 
@@ -590,7 +590,7 @@ Cookie: token=<your-jwt-token>
 
 ----------
 
-### **3. PUT /lessons/:id**
+### **3. PUT /lessons/edit-lesson/:id**
 
 #### **Description**
 
@@ -632,7 +632,7 @@ Edit an existing lesson by providing its `id` and updated information. Only **ad
 
 
 ```
-PUT /lessons/60c72b9f8d3c3b12c1f2f4bb
+PUT /lessons/edit-lesson/60c72b9f8d3c3b12c1f2f4bb
 Content-Type: application/json
 Cookie: token=<your-jwt-token>
 
@@ -678,7 +678,7 @@ Cookie: token=<your-jwt-token>
 
 ----------
 
-### **4. DELETE /lessons/:id**
+### **4. DELETE /lessons/delete-lesson/:id**
 
 #### **Description**
 
@@ -699,7 +699,7 @@ Delete an existing lesson. Only **admin** users can delete lessons.
 #### **Example Request**
 
 ```
-DELETE /lessons/60c72b9f8d3c3b12c1f2f4bb
+DELETE /lessons/delete-lesson/60c72b9f8d3c3b12c1f2f4bb
 Cookie: token=<your-jwt-token>
 ``` 
 
