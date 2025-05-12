@@ -10,7 +10,7 @@ const LessonsSchema = new schema({
   }, 
   lessonNumber: { 
     type: Number, 
-    required: true 
+    required: false 
   }, 
   level: { 
     type: String, 

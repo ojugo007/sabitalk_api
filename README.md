@@ -431,3 +431,320 @@ Handled internally by the server using Passport — no frontend action required 
 -   Session expires in 6 minutes or after password reset is complete.
     
 -   All responses follow the ```{ code, success, message, data }``` format.
+
+
+## ** 📚Lesson Management *
+
+### **Overview**
+
+This API allows you to manage and retrieve lessons for different languages. The backend uses **JWT token** authentication, stored in **cookies**. The following API endpoints are available:
+
+----------
+
+### **1. GET /lessons**
+
+#### **Description**
+
+Retrieve a specific lesson based on the language preference and pagination.
+
+#### **Request Parameters**
+
+-   **`skip`** (Optional, Default: 0): The number of lessons to skip. If `skip=1`, the second lesson will be returned, `skip=2` for the third lesson, etc.
+    
+-   **`language`** (Required): The language for the lesson translation. This will be used to filter lessons based on the language set in the cookie.
+    
+
+#### **Authentication**
+
+The JWT token must be sent via **cookies** (not the Authorization header).
+
+-   The token is expected to be stored in a cookie called **`token`**.
+    
+
+#### **Example Request**
+
+`GET /lessons?skip=1` 
+
+#### **Example Response**
+
+
+```
+{  
+	"code":  200,  
+	"success":  true,  
+	"data":  [  
+		{  
+			"topic":  "Family",  
+			"lessonNumber":  2,  
+			"englishTranslation":  "brother",  
+			"translation":  {  
+				"language":  "yoruba",  
+				"text":  "ìyá",  
+				"pronunciation":  "yoruba_iya.mp3" 
+			 }  
+		 } 
+	 ],  
+	"message":  "lessons retrieved successfully"  
+}
+``` 
+
+#### **Error Responses**
+
+-   **401 Unauthorized**: Token is missing, invalid, or expired.
+    
+
+----------
+
+### **2. POST /lessons**
+
+#### **Description**
+
+Add a new lesson or update an existing lesson. Only **admin** users can access this endpoint.
+
+#### **Request Body**
+
+
+```
+{
+  "lessonNumber": 1,
+  "topic": "Family",
+  "level": "beginner",
+  "englishTranslation": "brother",
+  "translations": [
+    {
+      "language": "yoruba",
+      "text": "ìyá",
+      "pronunciation": "yoruba_iya.mp3"
+    },
+    {
+      "language": "igbo",
+      "text": "nne",
+      "pronunciation": "igbo_nne.mp3"
+    },
+    {
+      "language": "hausa",
+      "text": "uwa",
+      "pronunciation": "hausa_uwa.mp3"
+    }
+  ]
+}
+
+``` 
+
+#### **Authentication**
+
+-   Only authenticated **admin** users can add or edit lessons.
+    
+-   JWT token must be included in cookies (stored as `token`).
+    
+
+#### **Example Request**
+
+
+
+```
+POST /lessons
+Content-Type: application/json
+Cookie: token=<your-jwt-token>
+
+{
+  "lessonNumber": 1,
+  "topic": "Family",
+  "level": "beginner",
+  "englishTranslation": "brother",
+  "translations": [
+    {
+      "language": "yoruba",
+      "text": "ìyá",
+      "pronunciation": "yoruba_iya.mp3"
+    }
+  ]
+}
+``` 
+
+#### **Response**
+
+
+```
+{
+  "code": 201,
+  "success": true,
+  "message": "lesson added successfully",
+  "data": {
+    "_id": "60c72b9f8d3c3b12c1f2f4bb",
+    "lessonNumber": 1,
+    "topic": "Family",
+    "level": "beginner",
+    "englishTranslation": "brother",
+    "translations": [
+      {
+        "language": "yoruba",
+        "text": "ìyá",
+        "pronunciation": "yoruba_iya.mp3"
+      }
+    ]
+  }
+}
+
+``` 
+
+----------
+
+### **3. PUT /lessons/:id**
+
+#### **Description**
+
+Edit an existing lesson by providing its `id` and updated information. Only **admin** users can edit lessons.
+
+#### **Request Parameters**
+
+-   **`id`** (Required): The unique identifier of the lesson to be edited.
+    
+
+#### **Request Body**
+
+
+```
+{
+  "lessonNumber": 1,
+  "topic": "Family",
+  "level": "beginner",
+  "englishTranslation": "sister",
+  "translations": [
+    {
+      "language": "yoruba",
+      "text": "àbúrò obìnrin",
+      "pronunciation": "yoruba_aburo_obinrin.mp3"
+    }
+  ]
+}
+
+``` 
+
+#### **Authentication**
+
+-   Only authenticated **admin** users can edit lessons.
+    
+-   JWT token must be included in cookies.
+    
+
+#### **Example Request**
+
+
+```
+PUT /lessons/60c72b9f8d3c3b12c1f2f4bb
+Content-Type: application/json
+Cookie: token=<your-jwt-token>
+
+{
+  "lessonNumber": 1,
+  "topic": "Family",
+  "level": "beginner",
+  "englishTranslation": "sister",
+  "translations": [
+    {
+      "language": "yoruba",
+      "text": "àbúrò obìnrin",
+      "pronunciation": "yoruba_aburo_obinrin.mp3"
+    }
+  ]
+}
+``` 
+
+#### **Response**
+
+
+```
+{
+  "code": 200,
+  "success": true,
+  "message": "lesson successfully updated",
+  "data": {
+    "_id": "60c72b9f8d3c3b12c1f2f4bb",
+    "lessonNumber": 1,
+    "topic": "Family",
+    "level": "beginner",
+    "englishTranslation": "sister",
+    "translations": [
+      {
+        "language": "yoruba",
+        "text": "àbúrò obìnrin",
+        "pronunciation": "yoruba_aburo_obinrin.mp3"
+      }
+    ]
+  }
+}
+``` 
+
+----------
+
+### **4. DELETE /lessons/:id**
+
+#### **Description**
+
+Delete an existing lesson. Only **admin** users can delete lessons.
+
+#### **Request Parameters**
+
+-   **`id`** (Required): The unique identifier of the lesson to be deleted.
+    
+
+#### **Authentication**
+
+-   Only authenticated **admin** users can delete lessons.
+    
+-   JWT token must be included in cookies.
+    
+
+#### **Example Request**
+
+```
+DELETE /lessons/60c72b9f8d3c3b12c1f2f4bb
+Cookie: token=<your-jwt-token>
+``` 
+
+#### **Response**
+
+```
+{
+  "code": 200,
+  "success": true,
+  "message": "lesson successfully deleted",
+  "data": null
+}
+``` 
+
+----------
+
+### **Authentication Details**
+
+#### **JWT Token**
+
+-   The JWT token is stored in the **cookie** named `token`.
+    
+-   The token is used to authenticate the user and determine their access level.
+    
+-   If no token is found or the token is invalid, the user will receive a `401 Unauthorized` response.
+    
+
+#### **Cookie Configuration**
+
+-   **`token`**: The cookie that holds the JWT token.
+    
+-   **`HttpOnly`**: Ensures the cookie cannot be accessed via JavaScript.
+    
+-   **`Secure`**: Ensure cookies are only sent over HTTPS connections in production.
+    
+
+----------
+
+### **Common Error Responses**
+
+-   **401 Unauthorized**: Missing or invalid JWT token.
+    
+-   **400 Bad Request**: Missing required parameters or invalid input.
+    
+-   **404 Not Found**: Resource (lesson) not found.
+    
+-   **500 Internal Server Error**: Server error.
+    
